@@ -1,11 +1,11 @@
 {
-  "name": "gxt-mining-bot",
+  "name": "gxt",
   "version": "1.0.0",
   "type": "module",
   "description": "Auto-claim GXT mining rewards every hour",
-  "main": "gxt-miner.mjs",
+  "main": "gxt.js",
   "scripts": {
-    "start": "node gxt-miner.mjs"
+    "start": "node gxt.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0"
