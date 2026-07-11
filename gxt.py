@@ -66,7 +66,7 @@ def draw_interface(msg, level='info'):
     
     # 1. Cetak Kotak Utama
     print(f"{spc}{C_SUCCESS}┌───────────────────────────────────────────┐{C_RESET}")
-    print(f"{spc}{C_SUCCESS}│    GXT MINING AUTO-CLAIM BOT (PYTHON)     │{C_RESET}")
+    print(f"{spc}{C_SUCCESS}│         GXT MINING AUTO-CLAIM BOT         │{C_RESET}")
     print(f"{spc}{C_SUCCESS}│         Status: LIVE & COLORIZED          │{C_RESET}")
     print(f"{spc}{C_SUCCESS}├───────────────────────────────────────────┤{C_RESET}")
     print(f"{spc}│ {C_INFO}💰 SALDO UTAMA  :{C_RESET} {current_balance:14.4f} GXT     │")
