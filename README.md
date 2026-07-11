@@ -5,29 +5,27 @@ Ikuti langkah-langkah berikut untuk menjalankan bot di komputer atau server Anda
 ### Langkah 1: Clone atau Siapkan Folder
 
 ```
-git clone 
+git clone https://github.com/erwindobp98/gxt.git
 ```
 
-Langkah 2: Instalasi Library/Dependensi
+### Langkah 2: Instalasi Library/Dependensi
 Instal semua modul eksternal yang dibutuhkan oleh bot menggunakan berkas requirements.txt yang telah disediakan:
-
 ```
 pip install -r requirements.txt
 ```
 
-Langkah 3: Konfigurasi Akun
+### Langkah 3: Konfigurasi Akun
 Buka file utama gxt.py menggunakan teks editor pilihan Anda (VS Code, Notepad++, dll). Cari baris CONFIG di bagian atas, lalu ganti dengan kredensial akun Anda:
-
-Python
+```
 # ═══════════════════════════════════════════
 # CONFIG (Isi Email & Password Anda di sini)
 # ═══════════════════════════════════════════
 EMAIL = "email_anda@gmail.com"
 PASSWORD = "password_anda_123"
+```
 
-Langkah 4: Jalankan Bot
+### Langkah 4: Jalankan Bot
 Jalankan bot menggunakan perintah Python standar berikut di terminal Anda:
-
 ```
 python gxt.py
 ```
@@ -35,7 +33,6 @@ python gxt.py
 📊 Visualisasi Tampilan UI Terminal
 Ketika dijalankan, terminal Anda akan dibersihkan secara otomatis dan menampilkan antarmuka simetris seperti berikut:
 
-Plaintext
                          ┌───────────────────────────────────────────┐
                          │    GXT MINING AUTO-CLAIM BOT (PYTHON)     │
                          │         Status: LIVE & COLORIZED          │
