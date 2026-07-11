@@ -1,19 +1,3 @@
-#!/usr/bin/env node
-/**
- * GXT Mining Auto-Claim Bot
- * Works on VPS, Termux, or any Node.js environment.
- * 
- * Setup:
- *   npm install
- *   cp .env.example .env
- *   nano .env  (fill in credentials)
- *   node gxt-miner.mjs
- * 
- * Background:
- *   screen -dmS gxt node gxt-miner.mjs  (VPS)
- *   nohup node gxt-miner.mjs &           (Termux)
- */
-
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 import { readFileSync, existsSync } from 'fs';
