@@ -1,30 +1,20 @@
-Markdown
-# ⛏️ GXT Mining Auto-Claim Bot
-
-Bot otomatis berbasis Python untuk melakukan klaim berkala (*auto-claim*) pada platform **GXT Mining Exchange**. Bot ini dilengkapi dengan antarmuka terminal (*UI Console*) yang bersih, simetris, terpusat secara otomatis, serta dilengkapi dengan fitur **Live Time Clock** (waktu berdetik secara *real-time*).
-
-## ✨ Fitur Utama
-* **All-in-One Console Box:** Judul, status, detail saldo, dan waktu terintegrasi dalam satu kotak rapi.
-* **Live Update Timer:** Detik pada jam pembaruan bergerak secara *real-time* setiap detik.
-* **Auto Slider Puzzle Solver:** Mampu mendeteksi dan menyelesaikan tantangan *captcha/puzzle* dari server secara otomatis.
-* **Jeda Acak (Anti-Bot):** Menggunakan rentang waktu tunggu acak aman (62-68 menit) setelah klaim berhasil.
-* **Responsive Layout:** Tampilan otomatis mendeteksi lebar terminal Anda agar posisi teks selalu berada tepat di tengah.
-
----
-
 ## 🚀 Panduan Instalasi (Dari Awal)
 
 Ikuti langkah-langkah berikut untuk menjalankan bot di komputer atau server Anda:
 
 ### Langkah 1: Clone atau Siapkan Folder
-Pastikan Anda sudah menginstal **Python (versi 3.8 atau yang lebih baru)** dan **Git Bash** (jika menggunakan Windows). Buka terminal Anda dan masuk ke folder bot:
-```bash
-cd path/to/your/folder/gxt-bot
+
+```
+git clone 
+```
+
 Langkah 2: Instalasi Library/Dependensi
 Instal semua modul eksternal yang dibutuhkan oleh bot menggunakan berkas requirements.txt yang telah disediakan:
 
-Bash
+```
 pip install -r requirements.txt
+```
+
 Langkah 3: Konfigurasi Akun
 Buka file utama gxt.py menggunakan teks editor pilihan Anda (VS Code, Notepad++, dll). Cari baris CONFIG di bagian atas, lalu ganti dengan kredensial akun Anda:
 
@@ -34,11 +24,14 @@ Python
 # ═══════════════════════════════════════════
 EMAIL = "email_anda@gmail.com"
 PASSWORD = "password_anda_123"
+
 Langkah 4: Jalankan Bot
 Jalankan bot menggunakan perintah Python standar berikut di terminal Anda:
 
-Bash
+```
 python gxt.py
+```
+
 📊 Visualisasi Tampilan UI Terminal
 Ketika dijalankan, terminal Anda akan dibersihkan secara otomatis dan menampilkan antarmuka simetris seperti berikut:
 
