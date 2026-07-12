@@ -5,7 +5,7 @@ Ikuti langkah-langkah berikut untuk menjalankan bot di komputer atau server Anda
 ### Langkah 1: Clone atau Siapkan Folder
 
 ```
-git clone https://github.com/erwindobp98/gxt.git
+git clone https://github.com/erwindobp98/gxt-auto-mining.git
 ```
 
 ### Langkah 2: Instalasi Library/Dependensi
