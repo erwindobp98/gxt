@@ -6,23 +6,26 @@ import hashlib
 import random
 import uuid
 import re
+import json
 from datetime import datetime, timedelta
 import httpx
 from supabase import create_client, Client
+from playwright.sync_api import sync_playwright
 
 # ═══════════════════════════════════════════
 # CONFIG (Isi Email & Password Anda di sini)
 # ═══════════════════════════════════════════
 EMAIL = "email_anda@gmail.com"
-PASSWORD = "password_anda_123"
+PASSWORD_GXT = "PasswordGXTAnda123!"     # <--- Password khusus untuk login GXT (Metode 1)
+PASSWORD_GOOGLE = "PasswordGoogleAnda123!" # <--- Password asli akun Google/Gmail Anda (Metode 2)
 
 SUPABASE_URL = 'https://eoerppzmsxhgmrcxrika.supabase.co'
 SUPABASE_KEY = 'sb_publishable_j-w0ixQxY1i505RyOrepyQ_9KosAIBA'
 GXT_BASE_URL = 'https://gxtexchange.com'
 CHECK_INTERVAL = 60  # 1 menit (dalam detik)
 
-if not EMAIL or not PASSWORD or "DI_SINI" in EMAIL:
-    print("\033[91m❌ Error: Silakan isi EMAIL dan PASSWORD Anda di dalam script terlebih dahulu!\033[0m")
+if not EMAIL or not PASSWORD_GXT or not PASSWORD_GOOGLE or "DI_SINI" in EMAIL:
+    print("\033[91m❌ Error: Silakan isi EMAIL, PASSWORD_GXT, dan PASSWORD_GOOGLE Anda di dalam script terlebih dahulu!\033[0m")
     sys.exit(1)
 
 # Inisialisasi Supabase Client
@@ -59,18 +62,17 @@ def draw_interface():
     # Mengambil data timestamp real-time detik ini
     ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    # Perubahan: Lebar kotak ditingkatkan menjadi 57 karakter agar tampak lebih besar di tengah screen
     box_width = 57
     pad_box = max(0, (lebar - box_width) // 2)
     spc = " " * pad_box
     
-    # Reset kursor ke pojok kiri atas Git Bash & bersihkan layar ke bawah
+    # Reset kursor ke pojok kiri atas & bersihkan layar ke bawah
     sys.stdout.write("\033[H\033[J")
     
-    # 1. Cetak Kotak Utama (Ukuran Lebih Besar & Proporsional)
+    # 1. Cetak Kotak Utama
     print(f"{spc}{C_SUCCESS}┌─────────────────────────────────────────────────────────┐{C_RESET}")
-    print(f"{spc}{C_SUCCESS}│                  GXT MINING AUTO-CLAIM                  │{C_RESET}")
-    print(f"{spc}{C_SUCCESS}│                      Status: LIVE                       │{C_RESET}")
+    print(f"{spc}{C_SUCCESS}│                   GXT MINING AUTO-CLAIM                 │{C_RESET}")
+    print(f"{spc}{C_SUCCESS}│                       Status: LIVE                      │{C_RESET}")
     print(f"{spc}{C_SUCCESS}├─────────────────────────────────────────────────────────┤{C_RESET}")
     print(f"{spc}│ {C_INFO}💰 SALDO UTAMA    :{C_RESET} {current_balance:18.4f} GXT           │")
     print(f"{spc}│ {C_WARN}⚡ SPEED MINING   :{C_RESET} {current_rate:18.4f} /jam          │")
@@ -99,27 +101,101 @@ def update_status(level, msg):
     draw_interface()
 
 # ═══════════════════════════════════════════
-# AUTHENTICATION
+# DUAL-METHOD AUTHENTICATION
 # ═══════════════════════════════════════════
 def authenticate():
     global access_token, token_expiry
     now_ms = time.time() * 1000
     
+    # 0. Cek apakah token lama masih aktif & valid
     if access_token and now_ms < (token_expiry - 5 * 60 * 1000):
         return access_token
         
-    update_status('info', 'Sedang melakukan autentikasi...')
+    # =========================================================================
+    # METODE 1: Login Langsung via Email & Password Supabase (Sangat Cepat & Hemat RAM)
+    # =========================================================================
+    update_status('info', 'Mencoba login instan via Jalur Email & Password...')
     try:
-        res = supabase.auth.sign_in_with_password({"email": EMAIL, "password": PASSWORD})
+        res = supabase.auth.sign_in_with_password({"email": EMAIL, "password": PASSWORD_GXT})
         access_token = res.session.access_token
         token_expiry = (time.time() + res.session.expires_in) * 1000
         
         supabase.postgrest.auth(access_token)
-        update_status('success', 'Berhasil login!')
-        time.sleep(1)
+        update_status('success', 'Metode 1 Berhasil: Login Email Sukses!')
+        time.sleep(1.5)
         return access_token
-    except Exception as e:
-        update_status('error', f'Autentikasi gagal: {str(e)}')
+        
+    except Exception as e_email:
+        update_status('warn', 'Metode 1 Gagal. Mencoba cadangan Google Auth...')
+        time.sleep(1.5)
+
+    # =========================================================================
+    # METODE 2: Cadangan Otomatis via Google Auth Simulator (Menggunakan Playwright)
+    # =========================================================================
+    update_status('info', 'Memicu Simulator Google Auth via Playwright...')
+    
+    username_clean = EMAIL.split('@')[0]
+    folder_profil = f"./sesi_google/{username_clean}"
+    
+    try:
+        with sync_playwright() as p:
+            # headless=False dimunculkan agar Anda bisa memantau / mengisi OTP Google jika diminta saat pertama run.
+            # Jika sudah sukses login sekali, Anda bisa mengubahnya kembali menjadi True.
+            context = p.chromium.launch_persistent_context(
+                user_data_dir=folder_profil, 
+                headless=False, 
+                args=["--disable-blink-features=AutomationControlled"]
+            )
+            
+            page = context.pages[0] if context.pages else context.new_page()
+            
+            # 1. Buka halaman login GXT
+            page.goto(f"{GXT_BASE_URL}/login")
+            page.wait_for_load_state("networkidle")
+            
+            # 2. Klik tombol "Sign in with Google"
+            page.click("button:has-text('Google')")
+            page.wait_for_load_state("networkidle")
+            
+            # 3. Otomatisasi pengisian form Google jika dialihkan ke halaman akun Google
+            if "accounts.google.com" in page.url:
+                update_status('info', 'Mengisi form login otomatis di halaman Google...')
+                page.fill("input[type='email']", EMAIL)
+                page.click("#identifierNext")
+                page.wait_for_timeout(2500)
+                
+                page.fill("input[type='password']", PASSWORD_GOOGLE)
+                page.click("#passwordNext")
+                page.wait_for_load_state("networkidle")
+            
+            # 4. Tunggu kembali ke domain utama GXT setelah berhasil login
+            page.wait_for_url(f"{GXT_BASE_URL}/**", timeout=60000)
+            
+            # 5. Ekstrak Local Storage untuk mengambil Token Supabase baru
+            storage_data = page.evaluate("() => JSON.stringify(localStorage)")
+            storage_dict = json.loads(storage_data)
+            
+            supabase_key = "sb-eoerppzmsxhgmrcxrika-auth-token"
+            if supabase_key in storage_dict:
+                token_data = json.loads(storage_dict[supabase_key])
+                access_token = token_data.get('access_token')
+                expires_in = token_data.get('expires_in', 3600)
+                token_expiry = (time.time() + expires_in) * 1000
+                
+                # Pasang token baru ke client Supabase
+                supabase.postgrest.auth(access_token)
+                update_status('success', 'Metode 2 Berhasil: Token Google Auth Diperbarui!')
+                
+                context.close()
+                time.sleep(1.5)
+                return access_token
+            else:
+                context.close()
+                update_status('error', 'Google Auth sukses, tetapi token Supabase tidak ditemukan.')
+                return None
+                
+    except Exception as e_google:
+        update_status('error', f'Semua Metode Login Gagal! G-Auth Error: {str(e_google)}')
         return None
 
 # ═══════════════════════════════════════════
@@ -233,7 +309,7 @@ def run_cycle():
         result = claim_mining()
         
         if result['status'] == 'success':
-            random_minutes = random.randint(62, 68)
+            random_minutes = random.randint(61, 64)
             time.sleep(1.5)
             return random_minutes * 60
             
