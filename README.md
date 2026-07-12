@@ -34,8 +34,8 @@ python gxt.py
 Ketika dijalankan, terminal Anda akan dibersihkan secara otomatis dan menampilkan antarmuka simetris seperti berikut:
 
                          ┌───────────────────────────────────────────┐
-                         │         GXT MINING AUTO-CLAIM BOT         │
-                         │         Status: LIVE & COLORIZED          │
+                         │           GXT MINING AUTO-CLAIM           │
+                         │               Status: LIVE                │
                          ├───────────────────────────────────────────┤
                          │ 💰 SALDO UTAMA  :       124.5050 GXT     │
                          │ ⚡ SPEED MINING :         0.1500 /jam    │
