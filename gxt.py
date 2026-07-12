@@ -34,10 +34,12 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 access_token = None
 token_expiry = 0
 
-# Simpan data balance secara global agar bisa di-refresh live setiap detik oleh loop utama
+# State Global untuk menjaga Output Tetap Live Setiap Detik
 current_balance = 0.0
 current_rate = 0.1
 current_total_mined = 0.0
+current_msg = "Memulai sistem..."
+current_level = "info"
 
 # ANSI Colors untuk tampilan terminal
 C_RESET = "\033[0m"
@@ -47,8 +49,8 @@ C_SUCCESS = "\033[92m"  # Hijau
 C_WARN = "\033[93m"     # Kuning
 C_ERROR = "\033[91m"    # Merah
 
-def draw_interface(msg, level='info'):
-    """Menggambar ulang Kotak Besar secara utuh dengan Live Time dan Log Status."""
+def draw_interface():
+    """Menggambar ulang seluruh antarmuka dengan ukuran kotak yang lebih besar dan lebar (100% Live Time)"""
     try:
         lebar = os.get_terminal_size().columns
     except:
@@ -57,36 +59,44 @@ def draw_interface(msg, level='info'):
     # Mengambil data timestamp real-time detik ini
     ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    box_width = 47
+    # Perubahan: Lebar kotak ditingkatkan menjadi 57 karakter agar tampak lebih besar di tengah screen
+    box_width = 57
     pad_box = max(0, (lebar - box_width) // 2)
     spc = " " * pad_box
     
     # Reset kursor ke pojok kiri atas Git Bash & bersihkan layar ke bawah
     sys.stdout.write("\033[H\033[J")
     
-    # 1. Cetak Kotak Utama
-    print(f"{spc}{C_SUCCESS}┌───────────────────────────────────────────┐{C_RESET}")
-    print(f"{spc}{C_SUCCESS}│         GXT MINING AUTO-CLAIM BOT         │{C_RESET}")
-    print(f"{spc}{C_SUCCESS}│         Status: LIVE & COLORIZED          │{C_RESET}")
-    print(f"{spc}{C_SUCCESS}├───────────────────────────────────────────┤{C_RESET}")
-    print(f"{spc}│ {C_INFO}💰 SALDO UTAMA  :{C_RESET} {current_balance:14.4f} GXT     │")
-    print(f"{spc}│ {C_WARN}⚡ SPEED MINING :{C_RESET} {current_rate:14.4f} /jam    │")
-    print(f"{spc}│ {C_SUCCESS}⛏️ TOTAL MINED  :{C_RESET} {current_total_mined:14.4f} GXT     │")
-    print(f"{spc}{C_SUCCESS}├───────────────────────────────────────────┤{C_RESET}")
-    print(f"{spc}│ {C_TIME}🕒 WAKTU UPDATE :{C_RESET} {ts:<18} │")
-    print(f"{spc}{C_SUCCESS}└───────────────────────────────────────────┘{C_RESET}")
+    # 1. Cetak Kotak Utama (Ukuran Lebih Besar & Proporsional)
+    print(f"{spc}{C_SUCCESS}┌─────────────────────────────────────────────────────────┐{C_RESET}")
+    print(f"{spc}{C_SUCCESS}│                  GXT MINING AUTO-CLAIM                  │{C_RESET}")
+    print(f"{spc}{C_SUCCESS}│                      Status: LIVE                       │{C_RESET}")
+    print(f"{spc}{C_SUCCESS}├─────────────────────────────────────────────────────────┤{C_RESET}")
+    print(f"{spc}│ {C_INFO}💰 SALDO UTAMA    :{C_RESET} {current_balance:18.4f} GXT           │")
+    print(f"{spc}│ {C_WARN}⚡ SPEED MINING   :{C_RESET} {current_rate:18.4f} /jam          │")
+    print(f"{spc}│ {C_SUCCESS}⛏️ TOTAL MINED    :{C_RESET} {current_total_mined:18.4f} GXT           │")
+    print(f"{spc}{C_SUCCESS}├─────────────────────────────────────────────────────────┤{C_RESET}")
+    print(f"{spc}│ {C_TIME}🕒 WAKTU UPDATE   :{C_RESET}      {ts:<22}      │")
+    print(f"{spc}{C_SUCCESS}└─────────────────────────────────────────────────────────┘{C_RESET}")
     
-    # 2. Cetak Baris Status/Hitung Mundur di bawahnya
+    # 2. Cetak Baris Status Output di bawahnya
     icons = {'info': 'ℹ️', 'success': '✅', 'error': '❌', 'warn': '⚠️'}
     colors = {'info': C_INFO, 'success': C_SUCCESS, 'error': C_ERROR, 'warn': C_WARN}
     
-    icon = icons.get(level, '•')
-    color = colors.get(level, C_RESET)
+    icon = icons.get(current_level, '•')
+    color = colors.get(current_level, C_RESET)
     
-    raw_len = len(f" {msg}") + 3
+    raw_len = len(f" {current_msg}") + 3
     padding_log = max(0, (lebar - raw_len) // 2)
     
-    print(f"{' ' * padding_log}{color}{icon} {msg}{C_RESET}", end="", flush=True)
+    print(f"{' ' * padding_log}{color}{icon} {current_msg}{C_RESET}", end="", flush=True)
+
+def update_status(level, msg):
+    """Mengubah data status global dan langsung memicu pembaruan layar visual"""
+    global current_msg, current_level
+    current_level = level
+    current_msg = msg
+    draw_interface()
 
 # ═══════════════════════════════════════════
 # AUTHENTICATION
@@ -98,42 +108,42 @@ def authenticate():
     if access_token and now_ms < (token_expiry - 5 * 60 * 1000):
         return access_token
         
-    draw_interface('Sedang melakukan autentikasi...', level='info')
+    update_status('info', 'Sedang melakukan autentikasi...')
     try:
         res = supabase.auth.sign_in_with_password({"email": EMAIL, "password": PASSWORD})
         access_token = res.session.access_token
         token_expiry = (time.time() + res.session.expires_in) * 1000
         
         supabase.postgrest.auth(access_token)
-        draw_interface('Berhasil login!', level='success')
+        update_status('success', 'Berhasil login!')
         time.sleep(1)
         return access_token
     except Exception as e:
-        draw_interface(f'Autentikasi gagal: {str(e)}', level='error')
+        update_status('error', f'Autentikasi gagal: {str(e)}')
         return None
 
 # ═══════════════════════════════════════════
 # PUZZLE SOLVER
 # ═══════════════════════════════════════════
 def solve_puzzle():
-    draw_interface('Menyelesaikan slider puzzle...', level='info')
+    update_status('info', 'Menyelesaikan slider puzzle...')
     headers = {'User-Agent': 'Mozilla/5.0'}
     
     try:
         with httpx.Client() as client:
             get_res = client.get(f"{GXT_BASE_URL}/api/public/puzzle", headers=headers)
             if get_res.status_code != 200:
-                draw_interface(f'Gagal mendapatkan puzzle. Status: {get_res.status_code}', level='error')
+                update_status('error', f'Gagal mendapatkan puzzle (Status: {get_res.status_code})')
                 return None
                 
             puzzle = get_res.json()
             if not puzzle.get('ok') or not puzzle.get('id') or not isinstance(puzzle.get('target_ratio'), (int, float)):
-                draw_interface('Struktur puzzle tidak valid.', level='error')
+                update_status('error', 'Struktur puzzle tidak valid.')
                 return None
                 
             target_pct = puzzle['target_ratio'] * 100
-            draw_interface(f'Target Puzzle: {target_pct:.1f}%', level='info')
-            time.sleep(1)
+            update_status('info', f'Target Puzzle: {target_pct:.1f}%')
+            time.sleep(1.5)
             
             seed = f"gxt-bot-{int(time.time() * 1000)}".encode('utf-8')
             device_hash = hashlib.sha256(seed).hexdigest()[:32]
@@ -148,13 +158,13 @@ def solve_puzzle():
             result = post_res.json()
             
             if result.get('ok'):
-                draw_interface('Puzzle berhasil dipecahkan!', level='success')
+                update_status('success', 'Puzzle berhasil dipecahkan!')
                 return puzzle['id']
                 
-            draw_interface('Gagal memecahkan puzzle.', level='error')
+            update_status('error', 'Gagal memecahkan puzzle.')
             return None
     except Exception as e:
-        draw_interface(f'Error puzzle: {str(e)}', level='error')
+        update_status('error', f'Error puzzle: {str(e)}')
         return None
 
 # ═══════════════════════════════════════════
@@ -162,7 +172,7 @@ def solve_puzzle():
 # ═══════════════════════════════════════════
 def claim_mining():
     key = str(uuid.uuid4())
-    draw_interface(f'Memulai klaim ({key[:8]}...)', level='info')
+    update_status('info', f'Memulai klaim ({key[:8]}...)')
     
     try:
         res = supabase.rpc('claim_mining_v1', {'_idempotency_key': key, '_puzzle_id': None}).execute()
@@ -170,8 +180,8 @@ def claim_mining():
     except Exception as e:
         msg = str(e)
         if 'puzzle_required' in msg or 'puzzle_invalid' in msg:
-            draw_interface('Butuh puzzle, mencoba memecahkan...', level='warn')
-            time.sleep(1)
+            update_status('warn', 'Butuh puzzle, mencoba memecahkan...')
+            time.sleep(1.5)
             puzzle_id = solve_puzzle()
             if not puzzle_id:
                 return {'status': 'puzzle_failed'}
@@ -181,15 +191,15 @@ def claim_mining():
                 res = supabase.rpc('claim_mining_v1', {'_idempotency_key': new_key, '_puzzle_id': puzzle_id}).execute()
                 data = res.data
             except Exception as e2:
-                draw_interface('Klaim gagal setelah puzzle.', level='error')
+                update_status('error', 'Klaim gagal setelah puzzle.')
                 return {'status': 'error'}
         else:
-            draw_interface(f'Klaim gagal: {msg}', level='error')
+            update_status('error', f'Klaim gagal: {msg}')
             return {'status': 'error'}
 
     if data and data.get('ok'):
         reward = float(data.get('reward', 0))
-        draw_interface(f'🎉 +{reward:.4f} GXT diklaim!', level='success')
+        update_status('success', f'🎉 +{reward:.4f} GXT diklaim!')
         return {'status': 'success', 'reward': reward}
         
     if data and data.get('next_in_seconds'):
@@ -228,14 +238,20 @@ def run_cycle():
             return random_minutes * 60
             
         if result['status'] == 'too_soon':
+            seconds = result['next_in']
+            update_status('info', f'Terlalu cepat. Tunggu {seconds // 3600}j {(seconds % 3600) // 60}m lagi.')
+            time.sleep(2)
             return max(CHECK_INTERVAL, result['next_in'] + 10)
             
         if result['status'] == 'puzzle_failed':
+            time.sleep(2)
             return 10 * 60
             
+        time.sleep(2)
         return 5 * 60
     except Exception as e:
-        draw_interface(f'Kesalahan Siklus: {str(e)}', level='error')
+        update_status('error', f'Kesalahan Siklus: {str(e)}')
+        time.sleep(3)
         return 5 * 60
 
 # ═══════════════════════════════════════════
@@ -248,12 +264,14 @@ if __name__ == "__main__":
         try:
             wait_seconds = run_cycle()
             
-            # Loop hitung mundur ini sekarang memanggil draw_interface()
-            # Sehingga waktu di dalam kotak ikut berdetik secara Live!
             while wait_seconds > 0:
                 m, s = divmod(wait_seconds, 60)
-                status_msg = f"Siklus selesai. Cek ulang dalam: {m:02d}m {s:02d}s"
-                draw_interface(status_msg, level='info')
+                status_countdown = f"Siklus selesai. Cek ulang dalam: {m:02d}m {s:02d}s"
+                
+                current_level = 'info'
+                current_msg = status_countdown
+                draw_interface()
+                
                 time.sleep(1)
                 wait_seconds -= 1
                 
@@ -261,5 +279,7 @@ if __name__ == "__main__":
             print(f"\n\n{C_WARN}⚠️ Bot dimatikan oleh pengguna.{C_RESET}")
             sys.exit(0)
         except Exception as err:
-            draw_interface(f"Kondisi tidak terduga: {str(err)}", level='error')
+            current_level = 'error'
+            current_msg = f"Kondisi tidak terduga: {str(err)}"
+            draw_interface()
             time.sleep(60)
