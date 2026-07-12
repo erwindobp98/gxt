@@ -9,21 +9,21 @@ git clone https://github.com/erwindobp98/gxt-auto-mining.git
 ```
 
 ### Langkah 2: Instalasi Library/Dependensi
-Instal semua modul eksternal yang dibutuhkan oleh bot menggunakan berkas requirements.txt yang telah disediakan:
+Install semua modul eksternal yang dibutuhkan oleh bot menggunakan berkas requirements.txt yang telah disediakan:
 ```
 pip install -r requirements.txt
 ```
-Install untuk login menggunakan google auth jika login menggunakan email dan passwoard gagal.
+### Install untuk login menggunakan google auth jika login menggunakan email dan passwoard gagal.
 
-Pastikan Anda sudah mengisi baris PASSWORD_GXT dan PASSWORD_GOOGLE di bagian paling atas script dengan password Anda masing-masing.
+1. Pastikan Anda sudah mengisi baris PASSWORD_GXT dan PASSWORD_GOOGLE di bagian paling atas script dengan password Anda masing-masing.
 
-Saat pertama kali dijalankan, jendela browser Chromium akan muncul.
+2. Saat pertama kali dijalankan, jendela browser Chromium akan muncul.
 
-Perhatikan proses pengisian otomatisnya. Jika Google memicu verifikasi/OTP, silakan klik atau input kode keamanan tersebut di jendela browser secara manual.
+3. Perhatikan proses pengisian otomatisnya. Jika Google memicu verifikasi/OTP, silakan klik atau input kode keamanan tersebut di jendela browser secara manual.
 
-Setelah bot berhasil melewati verifikasi Google dan mulai membaca saldo Anda di layar terminal, biarkan siklus pertama selesai.
+4. Setelah bot berhasil melewati verifikasi Google dan mulai membaca saldo Anda di layar terminal, biarkan siklus pertama selesai.
 
-(Opsional) Jika Anda ingin bot ini berjalan diam-diam tanpa memunculkan browser di kemudian hari, matikan script (Ctrl + C), ganti parameter headless=False menjadi headless=True di baris ke-104, lalu jalankan kembali scriptnya.
+5. (Opsional) Jika Anda ingin bot ini berjalan diam-diam tanpa memunculkan browser di kemudian hari, matikan script (Ctrl + C), ganti parameter headless=False menjadi headless=True di baris ke-104, lalu jalankan kembali scriptnya.
 ```
 playwright install chromium
 
