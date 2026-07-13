@@ -61,7 +61,7 @@ python -m playwright install
 
 4. Setelah bot berhasil melewati verifikasi Google dan mulai membaca saldo Anda di layar terminal, biarkan siklus pertama selesai.
 
-5. (Opsional) Jika Anda ingin bot ini berjalan diam-diam tanpa memunculkan browser di kemudian hari, matikan script (Ctrl + C), ganti parameter headless=False menjadi headless=True di baris ke-104, lalu jalankan kembali scriptnya.
+5. (Opsional) Jika Anda ingin bot ini berjalan diam-diam tanpa memunculkan browser di kemudian hari, matikan script (Ctrl + C), ganti parameter headless=False menjadi headless=True di baris ke-146, lalu jalankan kembali scriptnya.
 ```
 python gxt.py
 ```
