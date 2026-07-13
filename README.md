@@ -44,6 +44,14 @@ Ketika dijalankan, terminal Anda akan dibersihkan secara otomatis dan menampilka
                          ℹ️ Siklus selesai. Cek ulang dalam: 64m 58s
 
 ### Install untuk login menggunakan google auth jika login menggunakan email dan passwoard gagal.
+```
+playwright install chromium
+
+```
+Atau
+```
+python -m playwright install
+```
 
 1. Pastikan Anda sudah mengisi baris PASSWORD_GXT dan PASSWORD_GOOGLE di bagian paling atas script dengan password Anda masing-masing.
 
@@ -55,12 +63,5 @@ Ketika dijalankan, terminal Anda akan dibersihkan secara otomatis dan menampilka
 
 5. (Opsional) Jika Anda ingin bot ini berjalan diam-diam tanpa memunculkan browser di kemudian hari, matikan script (Ctrl + C), ganti parameter headless=False menjadi headless=True di baris ke-104, lalu jalankan kembali scriptnya.
 ```
-playwright install chromium
-
+python gxt.py
 ```
-Atau
-```
-python -m playwright install
-```
-⚠️ Disclaimer
-Penggunaan bot ini sepenuhnya menjadi tanggung jawab masing-masing pengguna. Pastikan untuk selalu memantau performa akun secara berkala.
