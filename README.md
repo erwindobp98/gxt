@@ -13,6 +13,36 @@ Install semua modul eksternal yang dibutuhkan oleh bot menggunakan berkas requir
 ```
 pip install -r requirements.txt
 ```
+### Langkah 3: Konfigurasi Akun
+Buka file utama gxt.py menggunakan teks editor pilihan Anda (VS Code, Notepad++, dll). Cari baris CONFIG di bagian atas, lalu ganti dengan kredensial akun Anda:
+```
+# ═══════════════════════════════════════════
+# CONFIG (Isi Email & Password Anda di sini)
+# ═══════════════════════════════════════════
+EMAIL = "email_anda@gmail.com"
+PASSWORD_GXT = "PasswordGXTAnda123!"     # <--- Password khusus untuk login GXT (Metode 1)
+PASSWORD_GOOGLE = "PasswordGoogleAnda123!" # <--- Password asli akun Google/Gmail Anda (Metode 2)
+```
+### Langkah 4: Jalankan Bot
+Jalankan bot menggunakan perintah Python standar berikut di terminal Anda:
+```
+python gxt.py
+```
+📊 Visualisasi Tampilan UI Terminal
+Ketika dijalankan, terminal Anda akan dibersihkan secara otomatis dan menampilkan antarmuka simetris seperti berikut:
+
+                         ┌───────────────────────────────────────────┐
+                         │           GXT MINING AUTO-CLAIM           │
+                         │               Status: LIVE                │
+                         ├───────────────────────────────────────────┤
+                         │ 💰 SALDO UTAMA  :       124.5050 GXT     │
+                         │ ⚡ SPEED MINING :         0.1500 /jam    │
+                         │ ⛏️ TOTAL MINED  :        45.1200 GXT     │
+                         ├───────────────────────────────────────────┤
+                         │ 🕒 WAKTU UPDATE : 2026-07-11 12:45:20     │
+                         └───────────────────────────────────────────┘
+                         ℹ️ Siklus selesai. Cek ulang dalam: 64m 58s
+
 ### Install untuk login menggunakan google auth jika login menggunakan email dan passwoard gagal.
 
 1. Pastikan Anda sudah mengisi baris PASSWORD_GXT dan PASSWORD_GOOGLE di bagian paling atas script dengan password Anda masing-masing.
@@ -32,39 +62,5 @@ Atau
 ```
 python -m playwright install
 ```
-
-### Langkah 3: Konfigurasi Akun
-Buka file utama gxt.py menggunakan teks editor pilihan Anda (VS Code, Notepad++, dll). Cari baris CONFIG di bagian atas, lalu ganti dengan kredensial akun Anda:
-```
-# ═══════════════════════════════════════════
-# CONFIG (Isi Email & Password Anda di sini)
-# ═══════════════════════════════════════════
-EMAIL = "email_anda@gmail.com"
-PASSWORD_GXT = "PasswordGXTAnda123!"     # <--- Password khusus untuk login GXT (Metode 1)
-PASSWORD_GOOGLE = "PasswordGoogleAnda123!" # <--- Password asli akun Google/Gmail Anda (Metode 2)
-```
-
-### Langkah 4: Jalankan Bot
-Jalankan bot menggunakan perintah Python standar berikut di terminal Anda:
-```
-python gxt.py
-```
-
-📊 Visualisasi Tampilan UI Terminal
-Ketika dijalankan, terminal Anda akan dibersihkan secara otomatis dan menampilkan antarmuka simetris seperti berikut:
-
-                         ┌───────────────────────────────────────────┐
-                         │           GXT MINING AUTO-CLAIM           │
-                         │               Status: LIVE                │
-                         ├───────────────────────────────────────────┤
-                         │ 💰 SALDO UTAMA  :       124.5050 GXT     │
-                         │ ⚡ SPEED MINING :         0.1500 /jam    │
-                         │ ⛏️ TOTAL MINED  :        45.1200 GXT     │
-                         ├───────────────────────────────────────────┤
-                         │ 🕒 WAKTU UPDATE : 2026-07-11 12:45:20     │
-                         └───────────────────────────────────────────┘
-                         ℹ️ Siklus selesai. Cek ulang dalam: 64m 58s
-Catatan: Bagian 🕒 WAKTU UPDATE dan hitung mundur di bawahnya akan terus bergerak dan berganti secara live setiap detik.
-
 ⚠️ Disclaimer
 Penggunaan bot ini sepenuhnya menjadi tanggung jawab masing-masing pengguna. Pastikan untuk selalu memantau performa akun secara berkala.
