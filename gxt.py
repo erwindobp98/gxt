@@ -143,7 +143,7 @@ def authenticate():
             # Jika sudah sukses login sekali, Anda bisa mengubahnya kembali menjadi True.
             context = p.chromium.launch_persistent_context(
                 user_data_dir=folder_profil, 
-                headless=False, 
+                headless=True, 
                 args=["--disable-blink-features=AutomationControlled"]
             )
             
